@@ -1,7 +1,7 @@
 from base64 import b64decode
 import numpy as np
-from s1c3 import decrypt_single_xor
-from s1c5 import encrypt_repeat_xor
+from c3 import decrypt_single_xor
+from c5 import encrypt_repeat_xor
 
 def edit_distance(a,b):
     if type(a) == str:
