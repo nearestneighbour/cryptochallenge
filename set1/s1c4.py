@@ -1,0 +1,15 @@
+import numpy as np
+from s1c3 import decrypt_single_xor, score_text_EN
+
+with open('s1c4data') as f:
+    data = f.readlines()
+    data = [d.strip() for d in data]
+
+msg = []
+scores = np.zeros((len(data)))
+for i in range(len(data)):
+    m, _ = decrypt_single_xor(data[i])
+    msg += [m]
+    scores[i] = score_text_EN(m)
+
+result = msg[np.argmax(scores)]
