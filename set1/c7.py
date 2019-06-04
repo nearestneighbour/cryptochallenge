@@ -5,7 +5,7 @@
 from base64 import b64decode
 from Crypto.Cipher import AES
 
-with open('s1c7data') as f:
+with open('c7data') as f:
     data = b64decode(f.read())
 
 key = 'YELLOW SUBMARINE'

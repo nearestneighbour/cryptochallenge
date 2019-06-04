@@ -36,7 +36,7 @@ def decrypt_repeat_xor(data, ks):
         msg = msg[:-pad]
     return msg, bytes(key)
 
-with open('s1c6data') as f:
+with open('c6data') as f:
     data = b64decode(f.read())
 
 _, ks = find_keysize(data)

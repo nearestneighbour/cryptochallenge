@@ -3,7 +3,7 @@
 
 import numpy as np
 
-with open('s1c8data') as f:
+with open('c8data') as f:
     data = f.readlines()
     data = [bytes.fromhex(d.strip()) for d in data]
 
