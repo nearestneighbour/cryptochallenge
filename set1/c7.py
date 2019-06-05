@@ -5,9 +5,12 @@
 from base64 import b64decode
 from Crypto.Cipher import AES
 
+def decrypt_ecb(data, key):
+    cph = AES.new(key, AES.MODE_ECB)
+    return cph.decrypt(data)
+
 with open('c7data') as f:
     data = b64decode(f.read())
 
 key = 'YELLOW SUBMARINE'
-cph = AES.new(key, AES.MODE_ECB)
-result = cph.decrypt(data)
+result = decrypt_ecb(data, key)

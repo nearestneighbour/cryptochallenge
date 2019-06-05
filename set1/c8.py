@@ -3,15 +3,17 @@
 
 import numpy as np
 
+def get_repetitions(data, bsz):
+    blocks = [[d[i:i+bsz] for i in range(0,len(d),bsz)] for d in data]
+    reps = np.zeros((len(blocks)))
+    for i in range(len(blocks)):
+        reps[i] = len(blocks[i])-len(set(blocks[i]))
+    return reps
+
 with open('c8data') as f:
     data = f.readlines()
     data = [bytes.fromhex(d.strip()) for d in data]
 
 bsz = 16
-blocks = [[d[i:i+bsz] for i in range(0,len(d),bsz)] for d in data]
-
-repetitions = np.zeros((len(blocks)))
-for i in range(len(blocks)):
-    repetitions[i] = len(blocks[i])-len(set(blocks[i]))
-
+repetitions = get_repetitions(data, bsz)
 result = data[np.argmax(repetitions)]
