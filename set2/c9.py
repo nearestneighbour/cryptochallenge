@@ -7,5 +7,6 @@ def pad_bytes(msg, bsz):
         msg += bytes([npad])
     return msg
 
-msg = 'YELLOW SUBMARINE'
-result = pad_bytes(msg, 20)
+if __name__ == '__main__':
+    msg = 'YELLOW SUBMARINE'
+    print(pad_bytes(msg, 20))

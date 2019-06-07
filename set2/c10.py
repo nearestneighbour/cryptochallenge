@@ -24,9 +24,10 @@ def encrypt_cbc(msg, key, iv):
         iv = block
     return data
 
-with open('c10data') as f:
-    data = b64decode(f.read())
+if __name__ == '__main__':
+    with open('c10data') as f:
+        data = b64decode(f.read())
 
-key = bytes([ord(c) for c in 'YELLOW SUBMARINE'])
-iv = bytes(16)
-result = decrypt_cbc(data, key, iv)
+    key = bytes([ord(c) for c in 'YELLOW SUBMARINE'])
+    iv = bytes(16)
+    print(decrypt_cbc(data, key, iv))
