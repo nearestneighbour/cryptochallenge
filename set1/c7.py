@@ -9,6 +9,10 @@ def decrypt_ecb(data, key):
     cph = AES.new(key, AES.MODE_ECB)
     return cph.decrypt(data)
 
+def encrypt_ecb(data, key):
+    cph = AES.new(key, AES.MODE_ECB)
+    return cph.encrypt(data)
+
 with open('c7data') as f:
     data = b64decode(f.read())
 
