@@ -4,10 +4,8 @@
 import numpy as np
 
 def get_repetitions(data, bsz):
-    blocks = [[d[i:i+bsz] for i in range(0,len(d),bsz)] for d in data]
-    reps = np.zeros((len(blocks)))
-    for i in range(len(blocks)):
-        reps[i] = len(blocks[i])-len(set(blocks[i]))
+    blocks = [data[i:i+bsz] for i in range(0,len(data),bsz)]
+    reps = len(blocks)-len(set(blocks))
     return reps
 
 if __name__ == '__main__':
@@ -15,6 +13,7 @@ if __name__ == '__main__':
         data = f.readlines()
         data = [bytes.fromhex(d.strip()) for d in data]
 
-    bsz = 16
-    repetitions = get_repetitions(data, bsz)
-    print(data[np.argmax(repetitions)])
+    repetitions = np.zeros((len(data)))
+    for i in range(len(data)):
+        repetitions[i] = get_repetitions(data[i], 16)
+    print(data[np.argmax(repetitions)].hex())
