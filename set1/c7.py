@@ -13,8 +13,8 @@ def encrypt_ecb(data, key):
     cph = AES.new(key, AES.MODE_ECB)
     return cph.encrypt(data)
 
-with open('c7data') as f:
-    data = b64decode(f.read())
-
-key = 'YELLOW SUBMARINE'
-result = decrypt_ecb(data, key)
+if __name__ == '__main__':
+    with open('c7data') as f:
+        data = b64decode(f.read())
+    key = 'YELLOW SUBMARINE'
+    print(decrypt_ecb(data, key))

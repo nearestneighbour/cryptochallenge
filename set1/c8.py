@@ -10,10 +10,11 @@ def get_repetitions(data, bsz):
         reps[i] = len(blocks[i])-len(set(blocks[i]))
     return reps
 
-with open('c8data') as f:
-    data = f.readlines()
-    data = [bytes.fromhex(d.strip()) for d in data]
+if __name__ == '__main__':
+    with open('c8data') as f:
+        data = f.readlines()
+        data = [bytes.fromhex(d.strip()) for d in data]
 
-bsz = 16
-repetitions = get_repetitions(data, bsz)
-result = data[np.argmax(repetitions)]
+    bsz = 16
+    repetitions = get_repetitions(data, bsz)
+    print(data[np.argmax(repetitions)])

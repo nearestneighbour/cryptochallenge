@@ -36,10 +36,11 @@ def decrypt_repeat_xor(data, ks):
         msg = msg[:-pad]
     return msg, bytes(key)
 
-with open('c6data') as f:
-    data = b64decode(f.read())
+if __name__ == '__main__':
+    with open('c6data') as f:
+        data = b64decode(f.read())
 
-_, ks = find_keysize(data)
-msg, key = decrypt_repeat_xor(data, ks)
-msg = ''.join([chr(i) for i in msg])
-key = ''.join([chr(i) for i in key])
+    _, ks = find_keysize(data)
+    msg, key = decrypt_repeat_xor(data, ks)
+    print('Message: ', ''.join([chr(i) for i in msg]))
+    print('Key: ', ''.join([chr(i) for i in key]))
