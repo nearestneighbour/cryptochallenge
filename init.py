@@ -1,3 +1,5 @@
+# Make it easier to import functions from different sets/challenges.
+
 import sys, os
 
 nsets = 2
