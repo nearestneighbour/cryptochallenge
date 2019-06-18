@@ -4,6 +4,7 @@
 import numpy as np
 
 def get_repetitions(data, bsz):
+    # Use this to detect ECB encrypted data
     blocks = [data[i:i+bsz] for i in range(0,len(data),bsz)]
     reps = len(blocks)-len(set(blocks))
     return reps
