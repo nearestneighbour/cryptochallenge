@@ -14,14 +14,14 @@ def encrypt_random(msg):
         iv = np.random.bytes(16)
         return encrypt_cbc(msg, np.random.bytes(16), np.random.bytes(16))
 
-def detect_ecb_cbc(msg, cph):
+def detect_ecb_cbc(msg, cph, bsz):
     # Remove bytes that are definitely not part of the message
     #cph = cph[5:-5]
     #left = len(cph) - len(msg)
     #cph = cph[(left-5):(5-left)]
-    reps = [get_repetitions(cph, 16)]
-    for i in range(len(cph) % 16):
-        reps += [get_repetitions(cph[i:], 16)]
+    reps = [get_repetitions(cph, bsz)]
+    for i in range(len(cph) % bsz):
+        reps += [get_repetitions(cph[i:], bsz)]
     return 'ecb' if max(reps) > 0 else 'cbc'
 
 if __name__ == '__main__':
