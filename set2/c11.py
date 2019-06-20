@@ -1,29 +1,24 @@
 import numpy as np
-from c7 import encrypt_ecb
 from c8 import get_repetitions
-from c9 import pad_bytes
-from c10 import encrypt_cbc
+from c9 import ecb_cipher
+from c10 import cbc_cipher
 
-def encrypt_random(msg):
+def encrypt_random(data, bsz):
     pre = np.random.bytes(np.random.randint(5,11))
     post = np.random.bytes(np.random.randint(5,11))
-    msg = pad_bytes(pre + msg + post, 16)
+    data = pre + data + post
     if np.random.randint(2) == 0:
-        return encrypt_ecb(msg, np.random.bytes(16))
+        return ecb_cipher.encrypt_ecb(data)
     else:
-        iv = np.random.bytes(16)
-        return encrypt_cbc(msg, np.random.bytes(16), np.random.bytes(16))
+        return cbc_cipher.encrypt_cbc(data)
 
-def detect_ecb_cbc(msg, cph, bsz):
-    # Remove bytes that are definitely not part of the message
-    #cph = cph[5:-5]
-    #left = len(cph) - len(msg)
-    #cph = cph[(left-5):(5-left)]
-    reps = [get_repetitions(cph, bsz)]
-    for i in range(len(cph) % bsz):
-        reps += [get_repetitions(cph[i:], bsz)]
+def detect_ecb_cbc(output, bsz):
+    reps = [get_repetitions(output, bsz)]
+    for i in range(len(output) % bsz):
+        reps += [get_repetitions(output[i:], bsz)]
     return 'ecb' if max(reps) > 0 else 'cbc'
 
-if __name__ == '__main__':
-    msg = ('X' * 64).encode()
-    print(detect_ecb_cbc(msg, encrypt_random(msg)))
+def main():
+    bsz = 16
+    data = 4 * bsz * b'X'
+    print(detect_ecb_cbc(encrypt_random(data, bsz), bsz))

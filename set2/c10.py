@@ -2,32 +2,36 @@
 # openssl aes-128-cbc -d -a -in c10data -K 59454c4c4f57205355424d4152494e45 -iv 00000000000000000000000000000000
 # python easy mode:
 # AES.new('YELLOW SUBMARINE', AES.MODE_CBC, '\x00'*16).decrypt(data)
+# python hard mode: see below 8-)
 
-from base64 import b64decode
-from Crypto.Cipher import AES
+import numpy as np
+from c9 import ecb_cipher, pad_bytes, unpad_bytes
 
-def decrypt_cbc(data, key, iv):
-    cph = AES.new(key, AES.MODE_ECB)
-    msg = bytes()
-    for i in range(0, len(data), 16):
-        block = cph.decrypt(data[i:i+16])
-        msg += bytes([a^b for a,b in zip(block,iv)])
-        iv = data[i:i+16]
-    return msg
+class cbc_cipher(ecb_cipher):
+    def encrypt(self, data, iv):
+        data = pad_bytes(data, self.bsz)
+        output = bytes()
+        for i in range(0, len(data), self.bsz):
+            block = self.cph.encrypt(bytes([a^b for a,b in zip(data[i:i+self.bsz],iv)]))
+            output += block
+            iv = block
+        return output
 
-def encrypt_cbc(msg, key, iv):
-    cph = AES.new(key, AES.MODE_ECB)
-    data = bytes()
-    for i in range(0, len(msg), 16):
-        block = cph.encrypt(bytes([a^b for a,b in zip(msg[i:i+16],iv)]))
-        data += block
-        iv = block
-    return data
+    def decrypt(self, data, iv):
+        output = bytes()
+        for i in range(0, len(data), self.bsz):
+            block = self.cph.decrypt(data[i:i+self.bsz])
+            output += bytes([a^b for a,b in zip(block,iv)])
+            iv = data[i:i+self.bsz]
+        return unpad_bytes(output)
 
-if __name__ == '__main__':
-    with open('c10data') as f:
+    @staticmethod
+    def encrypt_cbc(data, key=np.random.bytes(16), iv=np.random.bytes(16)):
+        return cbc_cipher(key).encrypt(data, iv)
+
+def main():
+    from base64 import b64decode
+    with open('set2/c10data') as f:
         data = b64decode(f.read())
-
-    key = bytes([ord(c) for c in 'YELLOW SUBMARINE'])
-    iv = bytes(16)
-    print(decrypt_cbc(data, key, iv))
+    cph = cbc_cipher(b'YELLOW SUBMARINE')
+    print(cph.decrypt(data, bytes(16)))

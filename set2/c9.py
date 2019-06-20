@@ -1,4 +1,5 @@
 from Crypto.Cipher import AES
+import numpy as np
 
 def pad_bytes(msg, bsz):
     if type(msg) == str:
@@ -12,15 +13,23 @@ def pad_bytes(msg, bsz):
 def unpad_bytes(msg):
     return msg[:-msg[-1]]
 
-# Updated version of the functions from challenge 7, convenient for future challenges
-def encrypt_ecb(data, key):
-    cph = AES.new(key, AES.MODE_ECB)
-    return cph.encrypt(pad_bytes(data, len(key)))
+# New version of the functions from challenge 7, convenient for future challenges
+class ecb_cipher:
+    def __init__(self, key=None):
+        self.key = key if key else np.random.bytes(16)
+        self.bsz = len(self.key)
+        self.cph = AES.new(self.key, AES.MODE_ECB)
 
-def decrypt_ecb(data, key):
-    cph = AES.new(key, AES.MODE_EDB)
-    return unpad_bytes(cph.decrypt(data))
+    def encrypt(self, data):
+        return self.cph.encrypt(pad_bytes(data, self.bsz))
 
-if __name__ == '__main__':
-    msg = 'YELLOW SUBMARINE'
+    def decrypt(self, data):
+        return unpad_bytes(self.cph.decrypt(data))
+
+    @staticmethod
+    def encrypt_ecb(data, key=np.random.bytes(16)):
+        return ecb_cipher(key).encrypt(data)
+
+def main():
+    msg = b'YELLOW SUBMARINE'
     print(pad_bytes(msg, 20))

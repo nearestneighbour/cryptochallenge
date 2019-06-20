@@ -1,4 +1,3 @@
-from base64 import b64decode
 import numpy as np
 from c3 import decrypt_single_xor
 from c5 import encrypt_repeat_xor
@@ -8,7 +7,6 @@ def edit_distance(a,b):
         a = [ord(i) for i in a]
     if type(b) == str:
         b = [ord(i) for i in b]
-
     return sum([bin(x^y).count('1') for x,y in zip(a,b)])
 
 def find_keysize(data, keysizes = range(2,41)):
@@ -36,11 +34,12 @@ def decrypt_repeat_xor(data, ks):
         msg = msg[:-pad]
     return msg, bytes(key)
 
-if __name__ == '__main__':
-    with open('c6data') as f:
+def main():
+    from base64 import b64decode
+    with open('set1/c6data') as f:
         data = b64decode(f.read())
 
     _, ks = find_keysize(data)
     msg, key = decrypt_repeat_xor(data, ks)
-    print('Message: ', ''.join([chr(i) for i in msg]))
-    print('Key: ', ''.join([chr(i) for i in key]))
+    print('Message: ', msg.decode())
+    print('Key: ', key.decode())
