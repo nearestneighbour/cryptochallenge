@@ -1,22 +1,23 @@
 import numpy as np
-from Crypto.cipher import AES
+from c9 import encrypt_ecb, decrypt_ecb
+from c12 import find_blocksize
 
-def parse_keyval(url):
-    props = url.split('&')
-    res = {}
-    for p in props:
-        res[p.split('=')[0]] = p.split('=')[1]
-    return res
+def parse_profile(url):
+    return {prop.split('=')[0]: prop.split('=')[1] for prop in url.split('&')}
 
 def profile_for(email):
-    assert (email.find('&') == -1 & email.find('=') == -1), "Stupid hacker"
-    return 'email=' + email + 'uid=10&role=user'
+    assert ('&' not in email and '=' not in email), "Stupid hacker"
+    profile = 'email=' + email + 'uid=10&role=user'
+    return encrypt_ecb(profile.encode(), kklklm) # key is a global variable
 
-key = np.bytes.random(16)
-cph = AES.new(key, AES.MODE_ECB)
+def decrypt_profile(profile, key):
+    return parse_profile(decrypt_ecb(profile, key))  # key is a global variable
 
-def encrypt_profile(profile):
-    return cph.encrypt(profile)
-
-def decrypt_profile(profile):
-    return parse_keyval(cph.decrypt(profile))
+if __name__ == '__main__':
+    # We don't know the key or the block size
+    key = np.random.bytes(16)
+    # We can only know the output of the profile_for function for a given input
+    myprofile = profile_for('')
+    bsz = find_blocksize(myprofile, profile_for)
+    # Mail should be of such length that 'user' is at the start of a new block
+    mail_length = (len(myprofile) - 5) % bsz
