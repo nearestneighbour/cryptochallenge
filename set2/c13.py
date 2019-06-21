@@ -1,11 +1,9 @@
 import numpy as np
+from c8 import get_repetitions
 from c9 import pad_bytes, ecb_cipher
 from c12 import find_bsz_by_len
 
 class profile_manager(ecb_cipher):
-    #def __init__(self, key=None):
-    #    self.cph = ecb_cipher(key if key else np.random.bytes(16))
-
     def parse_profile(self, url):
         if type(url) == bytes:
             url = url.decode()
@@ -21,8 +19,8 @@ class profile_manager(ecb_cipher):
         profile = 'email=' + addr + '&uid=10&role=user'
         return self.encrypt(profile.encode())
 
-# Find how long the encrypted string is when input='' (excluding padded bytes)
-def find_basestr_len(encrypt):
+# Find how long the output is when input='' (removing padded bytes).
+def find_cipher_len(encrypt):
     l0 = len(encrypt(''))
     l1 = l0
     npadded = 0
@@ -31,19 +29,40 @@ def find_basestr_len(encrypt):
         l1 = len(encrypt(npadded * b'X'))
     return l0 + 1 - npadded
 
-# We don't know the key, block size or encryption function
-# Only thing we know is the output of profile_for for a given input
-prf_manager = profile_manager()
-bsz = find_bsz_by_len(prf_manager.profile_for)
+# Find how long the string is that prepends the user input
+def find_prepend_len(encrypt, bsz):
+    for i in range(bsz):
+        out = encrypt((i + 2*bsz) * b'X')
+        if get_repetitions(out, bsz) > 0:
+            break
+    if i == 0:
+        return i
+    for j in range(len(out) // bsz):
+        if out[j*bsz : (j+1)*bsz] == out[(j+1)*bsz : (j+2)*bsz]:
+            break
+    return j * bsz - i
 
-# Generate mail address of length such that 'user' is at the start of a new
-# block so we can extract the first part of our cut-and-paste
-cph_len = find_basestr_len(prf_manager.profile_for) - 4
-addr_len = int(bsz * np.ceil(cph_len / bsz)) - cph_len
-q1 = prf_manager.profile_for(addr_len * 'X')[:-bsz]
+def main():
+    # We don't know the key, block size or encryption function. The only
+    # information we have is the output of profile_for for a given input.
+    # (also we know the last 4 characters of the profile are 'user')
+    prf_manager = profile_manager()
 
-# Let's put 'admin' at the start of the 2nd block so we can cut and paste it
-# after the first part
-addr_prepend = (bsz - 6) * b'X'
-addr = addr_prepend + pad_bytes('admin', bsz)
-q2 = prf_manager.profile_for(addr)[bsz:2*bsz]
+    # Set address length such that 'user' is at the start of a new  block so we
+    # can cut off the first part, which ends with '&role='.
+    bsz = find_bsz_by_len(prf_manager.profile_for)
+    cph_len = find_cipher_len(prf_manager.profile_for) - 4 # len('user')
+    input_len = int(bsz * np.ceil(cph_len / bsz)) - cph_len
+    part1 = prf_manager.profile_for(input_len * b'X')[:-bsz]
+
+    # Generate address so that 'admin' is at the start of the 2nd block so we
+    # can paste it after the first part. Make sure the rest of the 2nd block is
+    # padded so it is a legitimate "last" block.
+    prep_len = find_prepend_len(prf_manager.profile_for, bsz)
+    addr_len = int(bsz * np.ceil(prep_len / bsz)) - prep_len
+    addr = addr_len * b'X' + pad_bytes('admin', bsz)
+    part2 = prf_manager.profile_for(addr)[(prep_len+addr_len):(prep_len+addr_len+bsz)]
+
+    # Paste two parts together and decrypt profile.
+    ciphertext = part1 + part2
+    print(prf_manager.decrypt_profile(ciphertext))
