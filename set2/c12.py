@@ -2,14 +2,28 @@ from c8 import get_repetitions
 from c9 import pad_bytes, ecb_cipher
 from c11 import detect_ecb_cbc
 
-# It should be possible without the 'data' parameter, but this gives you an
-# indication of a maximum block size
-def find_blocksize(data, encrypt):
-    for bsz in range(1, len(data)):
-        reps0 = get_repetitions(encrypt(data), bsz)
-        if get_repetitions(encrypt(2*bsz*b'X' + data), bsz) > reps0:
-            break
+# Find the block size of a block cipher by counting the number of repetitions.
+# encrypt parameter should be an encryption function handle
+def find_bsz_by_reps(encrypt, max_bsz = 64, min_bsz = 2):
+    reps = 0
+    bsz = min_bsz - 1
+    while reps == 0:
+        bsz += 1
+        if bsz > max_bsz:
+            return -1
+        reps = get_repetitions(encrypt(2*bsz*b'X'), bsz)
     return bsz
+
+# Find the block size of a block cipher by counting how much data is padded.
+# This will be used in future challenges
+def find_bsz_by_len(encrypt):
+    l0 = len(encrypt(''))
+    l1 = l0
+    n = 0
+    while l1 == l0:
+        n += 1
+        l1 = len(encrypt(n * b'X'))
+    return l1 - l0
 
 def decode_ecb(data, encrypt, bsz):
     output = ''
@@ -39,7 +53,10 @@ def main():
         YnkK"""
     )
 
-    bsz = find_blocksize(unknown_str, cph.encrypt)
+    bsz = find_bsz_by_reps(cph.encrypt)
+    if bsz == -1:
+        print('Could not detect block size, either block size > 64 or cipher is not ECB')
+        return
     if detect_ecb_cbc(cph.encrypt(unknown_str), bsz):
         print(decode_ecb(unknown_str, cph.encrypt, bsz))
     else:
