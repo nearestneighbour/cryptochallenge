@@ -3,9 +3,9 @@ import numpy as np
 
 def pad_bytes(msg, bsz):
     if type(msg) == str:
-        msg = bytes([ord(i) for i in msg])
+        msg = msg.encode()
 
-    npad = bsz - (len(msg) % bsz)
+    npad = (bsz - (len(msg) % bsz)) % bsz
     for i in range(npad):
         msg += bytes([npad])
     return msg
