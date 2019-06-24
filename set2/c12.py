@@ -25,7 +25,7 @@ def find_bsz_by_len(encrypt):
         l1 = len(encrypt(n * b'X'))
     return l1 - l0
 
-def decode_ecb(data, encrypt, bsz):
+def decode_plaintext_ecb(data, encrypt, bsz):
     output = ''
     prep = (bsz-1) * b'X'
     for i in range(len(data)):
