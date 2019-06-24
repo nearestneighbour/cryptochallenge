@@ -14,3 +14,6 @@ class random_cipher(cbc_cipher):
     def decrypt_string(self, data):
         string = self.decrypt(string)
         return string != None
+
+# All strings are different length and thus different padding.
+# Therefore we can identify strings by their last byte.
