@@ -1,7 +1,7 @@
 from Crypto.Cipher import AES
 import numpy as np
 
-def pad_bytes(msg, bsz):
+def pad_pkcs7(msg, bsz):
     if type(msg) == str:
         msg = msg.encode()
 
@@ -10,7 +10,7 @@ def pad_bytes(msg, bsz):
         msg += bytes([npad])
     return msg
 
-def unpad_bytes(msg):
+def unpad_pkcs7(msg):
     return msg[:-msg[-1]]
 
 # New version of the functions from challenge 7, convenient for future challenges
@@ -21,10 +21,10 @@ class ecb_cipher:
         self.cph = AES.new(self.key, AES.MODE_ECB)
 
     def encrypt(self, data):
-        return self.cph.encrypt(pad_bytes(data, self.bsz))
+        return self.cph.encrypt(pad_pkcs7(data, self.bsz))
 
     def decrypt(self, data):
-        return unpad_bytes(self.cph.decrypt(data))
+        return unpad_pkcs7(self.cph.decrypt(data))
 
     @staticmethod
     def encrypt_ecb(data, key=np.random.bytes(16)):
@@ -32,4 +32,4 @@ class ecb_cipher:
 
 def main():
     msg = b'YELLOW SUBMARINE'
-    print(pad_bytes(msg, 20))
+    print(pad_pkcs7(msg, 20))

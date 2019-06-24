@@ -1,6 +1,5 @@
 from c8 import get_repetitions
-from c9 import pad_bytes, ecb_cipher
-from c11 import detect_ecb_cbc
+from c9 import ecb_cipher
 
 # Find the block size of a block cipher by counting the number of repetitions.
 # encrypt parameter should be an encryption function handle
@@ -40,6 +39,7 @@ def decode_plaintext_ecb(data, encrypt, bsz):
 def main():
     import numpy as np
     from base64 import b64decode
+    from c11 import detect_ecb_cbc
     # This part should be unknown, i.e. we don't know the key, the block size or
     # the content of the encryption function
     cph = ecb_cipher()
@@ -58,6 +58,6 @@ def main():
         print('Could not detect block size, either block size > 64 or cipher is not ECB')
         return
     if detect_ecb_cbc(cph.encrypt(unknown_str), bsz):
-        print(decode_ecb(unknown_str, cph.encrypt, bsz))
+        print(decode_plaintext_ecb(unknown_str, cph.encrypt, bsz))
     else:
         print('Unknown string is not encrypted using ECB.')

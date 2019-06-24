@@ -1,6 +1,5 @@
 from c8 import get_repetitions
-from c9 import pad_bytes, ecb_cipher
-from c12 import find_bsz_by_len, decode_plaintext_ecb
+from c9 import ecb_cipher
 
 class profile_manager(ecb_cipher):
     def parse_profile(self, url):
@@ -20,6 +19,9 @@ class profile_manager(ecb_cipher):
 
 def main():
     import numpy as np
+    from c9 import pad_pkcs7, ecb_cipher
+    from c12 import find_bsz_by_len
+    
     # We don't know the key, block size or encryption function, all we know is
     # the profile_for function prepends 'email=' and appends '&uid=10&role=user'
     # to the user input, and we know the output of profile_for for a given input.
@@ -30,14 +32,14 @@ def main():
     bsz = find_bsz_by_len(prf.profile_for)
     pre_len = len('email=')
     post_len = len('&uid=10&role=')
-    addr_len = len(pad_bytes((pre_len + post_len) * b'X', bsz)) - pre_len - post_len
+    addr_len = len(pad_pkcs7((pre_len + post_len) * b'X', bsz)) - pre_len - post_len
     part1 = prf.profile_for(addr_len * b'X')[:-bsz]
 
     # Generate address so that 'admin' is at the start of the 2nd block so we
     # can paste it after the first part. Make sure the rest of the 2nd block is
     # padded so it is a legitimate "last" block.
-    addr_len = len(pad_bytes(pre_len * b'X', bsz)) - pre_len
-    addr = addr_len * b'X' + pad_bytes(b'admin', bsz)
+    addr_len = bsz - pre_len
+    addr = addr_len * b'X' + pad_pkcs7(b'admin', bsz)
     part2 = prf.profile_for(addr)[(pre_len+addr_len):(pre_len+addr_len+bsz)]
 
     # Paste two parts together and decrypt profile.

@@ -1,6 +1,6 @@
 import numpy as np
 from c9 import ecb_cipher
-from c12 import find_bsz_by_len, decode_plaintext_ecb
+from c12 import decode_plaintext_ecb
 
 class random_cipher(ecb_cipher):
     def __init__(self):
@@ -32,6 +32,8 @@ def decode_plaintext_prep(data, encrypt, bsz):
 
 def main():
     from base64 import b64decode
+    from c12 import find_bsz_by_len
+    
     unknown_str = b64decode(
      """Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
         aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq

@@ -5,11 +5,11 @@
 # python hard mode: see below 8-)
 
 import numpy as np
-from c9 import ecb_cipher, pad_bytes, unpad_bytes
+from c9 import ecb_cipher, pad_pkcs7, unpad_pkcs7
 
 class cbc_cipher(ecb_cipher):
     def encrypt(self, data, iv):
-        data = pad_bytes(data, self.bsz)
+        data = pad_pkcs7(data, self.bsz)
         output = bytes()
         for i in range(0, len(data), self.bsz):
             block = self.cph.encrypt(bytes([a^b for a,b in zip(data[i:i+self.bsz],iv)]))
@@ -23,7 +23,7 @@ class cbc_cipher(ecb_cipher):
             block = self.cph.decrypt(data[i:i+self.bsz])
             output += bytes([a^b for a,b in zip(block,iv)])
             iv = data[i:i+self.bsz]
-        return unpad_bytes(output)
+        return unpad_pkcs7(output)
 
     @staticmethod
     def encrypt_cbc(data, key=np.random.bytes(16), iv=np.random.bytes(16)):
@@ -31,6 +31,7 @@ class cbc_cipher(ecb_cipher):
 
 def main():
     from base64 import b64decode
+
     with open('set2/c10data') as f:
         data = b64decode(f.read())
     cph = cbc_cipher(b'YELLOW SUBMARINE')
