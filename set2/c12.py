@@ -42,7 +42,7 @@ def main():
     from base64 import b64decode
     # This part should be unknown, i.e. we don't know the key, the block size or
     # the content of the encryption function
-    cph = ecb_cipher(np.random.bytes(16))
+    cph = ecb_cipher()
 
     # The only thing we can use for the attack is the unknown string and the
     # cipher function.

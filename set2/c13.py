@@ -1,4 +1,3 @@
-import numpy as np
 from c8 import get_repetitions
 from c9 import pad_bytes, ecb_cipher
 from c12 import find_bsz_by_len
@@ -15,7 +14,7 @@ class profile_manager(ecb_cipher):
     def profile_for(self, addr):
         if type(addr) == bytes:
             addr = addr.decode()
-        assert ('&' not in addr and '=' not in addr), "Stupid hacker"
+        assert ('&' not in addr and '=' not in addr), "Not allowed"
         profile = 'email=' + addr + '&uid=10&role=user'
         return self.encrypt(profile.encode())
 
@@ -29,7 +28,7 @@ def find_cipher_len(encrypt):
         l1 = len(encrypt(npadded * b'X'))
     return l0 + 1 - npadded
 
-# Find how long the string is that prepends the user input
+# Find how long the string is that prepends the user input, in this case 'email='
 def find_prepend_len(encrypt, bsz):
     for i in range(bsz):
         out = encrypt((i + 2*bsz) * b'X')
@@ -43,6 +42,7 @@ def find_prepend_len(encrypt, bsz):
     return j * bsz - i
 
 def main():
+    import numpy as np
     # We don't know the key, block size or encryption function. The only
     # information we have is the output of profile_for for a given input.
     # (also we know the last 4 characters of the profile are 'user')
