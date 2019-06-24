@@ -1,17 +1,21 @@
 from Crypto.Cipher import AES
 import numpy as np
 
-def pad_pkcs7(msg, bsz):
-    if type(msg) == str:
-        msg = msg.encode()
+def pad_pkcs7(data, bsz):
+    if type(data) == str:
+        data = data.encode()
 
-    npad = (bsz - (len(msg) % bsz)) % bsz
+    npad = (bsz - (len(data) % bsz)) % bsz
     for i in range(npad):
-        msg += bytes([npad])
-    return msg
+        data += bytes([npad])
+    return data
 
-def unpad_pkcs7(msg):
-    return msg[:-msg[-1]]
+def unpad_pkcs7(data):
+    npad = data[-1]
+    for i in data[-npad:]:
+        if i != npad:
+            return None
+    return data[:-npad]
 
 # New version of the functions from challenge 7, convenient for future challenges
 class ecb_cipher:
