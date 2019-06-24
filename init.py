@@ -2,7 +2,8 @@
 
 import sys, os
 
-nsets = 2
+nsets = 8
 
 for i in range(nsets):
-    sys.path.append(os.getcwd() + '/set' + str(i+1))
+    if os.path.isdir(os.getcwd() + '/set' + str(i+1)):
+        sys.path.append(os.getcwd() + '/set' + str(i+1))
