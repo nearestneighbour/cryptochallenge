@@ -5,7 +5,7 @@ def pad_pkcs7(data, bsz):
     if type(data) == str:
         data = data.encode()
 
-    npad = (bsz - (len(data) % bsz)) % bsz
+    npad = bsz - (len(data) % bsz)
     for i in range(npad):
         data += bytes([npad])
     return data
