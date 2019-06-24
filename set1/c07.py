@@ -14,7 +14,7 @@ def encrypt_ecb(data, key):
 
 def main():
     from base64 import b64decode
-    with open('set1/c7data') as f:
+    with open('set1/c07data') as f:
         data = b64decode(f.read())
     key = b'YELLOW SUBMARINE'
     print(decrypt_ecb(data, key))

@@ -1,8 +1,8 @@
 import numpy as np
-from c3 import decrypt_single_xor, score_text_EN
+from c03 import decrypt_single_xor, score_text_EN
 
 def main():
-    with open('set1/c4data') as f:
+    with open('set1/c04data') as f:
         data = f.readlines()
         data = [d.strip() for d in data]
 

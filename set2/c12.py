@@ -1,5 +1,5 @@
-from c8 import get_repetitions
-from c9 import ecb_cipher
+from c08 import get_repetitions
+from c09 import ecb_cipher
 
 # Find the block size of a block cipher by counting the number of repetitions.
 # encrypt parameter should be an encryption function handle

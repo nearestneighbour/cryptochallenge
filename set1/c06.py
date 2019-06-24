@@ -1,6 +1,6 @@
 import numpy as np
-from c3 import decrypt_single_xor
-from c5 import encrypt_repeat_xor
+from c03 import decrypt_single_xor
+from c05 import encrypt_repeat_xor
 
 def edit_distance(a,b):
     if type(a) == str:
@@ -36,7 +36,7 @@ def decrypt_repeat_xor(data, ks):
 
 def main():
     from base64 import b64decode
-    with open('set1/c6data') as f:
+    with open('set1/c06data') as f:
         data = b64decode(f.read())
 
     _, ks = find_keysize(data)

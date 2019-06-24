@@ -1,5 +1,5 @@
-from c8 import get_repetitions
-from c9 import ecb_cipher
+from c08 import get_repetitions
+from c09 import ecb_cipher
 
 class profile_manager(ecb_cipher):
     def parse_profile(self, url):
@@ -21,7 +21,7 @@ def main():
     import numpy as np
     from c9 import pad_pkcs7, ecb_cipher
     from c12 import find_bsz_by_len
-    
+
     # We don't know the key, block size or encryption function, all we know is
     # the profile_for function prepends 'email=' and appends '&uid=10&role=user'
     # to the user input, and we know the output of profile_for for a given input.

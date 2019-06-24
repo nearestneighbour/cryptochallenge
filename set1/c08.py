@@ -6,7 +6,7 @@ def get_repetitions(data, bsz):
 
 def main():
     import numpy as np
-    with open('set1/c8data') as f:
+    with open('set1/c08data') as f:
         data = f.readlines()
         data = [bytes.fromhex(d.strip()) for d in data]
 
