@@ -1,0 +1,24 @@
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
+import numpy as np
+
+class ctr_cipher:
+    def __init__(self, key=None, counter=None):
+        self.key = key if key else np.random.bytes(16)
+        self.ctr = counter if counter else Counter.new(64)
+        self.cph = AES.new(key, AES.MODE_CTR, counter=self.ctr)
+
+    def encrypt(self, data):
+        return self.cph.encrypt(data)
+
+    def decrypt(self, data):
+        return self.cph.decrypt(data)
+
+def main():
+    from base64 import b64decode
+
+    data = 'L77na/nrFsKvynd6HzOoG7GHTLXsTVu9qvY/2syLXzhPweyyMTJULu/6/kXX0KSvoOLSFQ=='
+    key = b'YELLOW SUBMARINE'
+    ctr = Counter.new(64, prefix=bytes(8), initial_value=0, little_endian=True)
+    cph = ctr_cipher(key, ctr)
+    print(cph.decrypt(b64decode(data)))
