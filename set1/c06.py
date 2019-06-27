@@ -9,7 +9,7 @@ def edit_distance(a,b):
         b = [ord(i) for i in b]
     return sum([bin(x^y).count('1') for x,y in zip(a,b)])
 
-def find_keysize(data, keysizes = range(2,41)):
+def find_keysize(data, keysizes):
     dist = np.zeros((len(keysizes)))
     for i in range(len(keysizes)):
         ks = keysizes[i]
@@ -39,7 +39,7 @@ def main():
     with open('set1/c06data') as f:
         data = b64decode(f.read())
 
-    _, ks = find_keysize(data)
+    _, ks = find_keysize(data, range(2,41))
     msg, key = decrypt_repeat_xor(data, ks)
     print('Message: ', msg.decode())
     print('Key: ', key.decode())
