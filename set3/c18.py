@@ -4,19 +4,18 @@ import numpy as np
 
 class ctr_cipher:
     def __init__(self, **kwargs):
-        self.kwargs = kwargs # for reproducibility
         self.key = kwargs.pop('key',np.random.bytes(16))
-        self.ctr = Counter.new(64, **kwargs)
-        self.cph = AES.new(self.key, AES.MODE_CTR, counter=self.ctr)
+        self.kwargs = kwargs # for counter object
 
     def encrypt(self, data):
-        return self.cph.encrypt(data)
+        ctr = Counter.new(64, **self.kwargs)
+        cph = AES.new(self.key, AES.MODE_CTR, counter=ctr)
+        return cph.encrypt(data)
 
     def decrypt(self, data):
-        return self.cph.decrypt(data)
-
-    def copy(self):
-        return ctr_cipher(**self.kwargs)
+        ctr = Counter.new(64, **self.kwargs)
+        cph = AES.new(self.key, AES.MODE_CTR, counter=ctr)
+        return cph.decrypt(data)
 
 def main():
     from base64 import b64decode
