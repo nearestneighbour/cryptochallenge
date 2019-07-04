@@ -4,17 +4,16 @@ import numpy as np
 
 class ctr_cipher:
     def __init__(self, **kwargs):
-        self.key = kwargs.pop('key',np.random.bytes(16))
+        self.key = kwargs.pop('key', np.random.bytes(16))
         self.kwargs = kwargs # for counter object
+        self.ctr = Counter.new(64, **self.kwargs)
 
     def encrypt(self, data):
-        ctr = Counter.new(64, **self.kwargs)
-        cph = AES.new(self.key, AES.MODE_CTR, counter=ctr)
+        cph = AES.new(self.key, AES.MODE_CTR, counter=self.ctr)
         return cph.encrypt(data)
 
     def decrypt(self, data):
-        ctr = Counter.new(64, **self.kwargs)
-        cph = AES.new(self.key, AES.MODE_CTR, counter=ctr)
+        cph = AES.new(self.key, AES.MODE_CTR, counter=self.ctr)
         return cph.decrypt(data)
 
 def main():
