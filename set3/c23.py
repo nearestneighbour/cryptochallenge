@@ -36,7 +36,7 @@ def untemper_left_shift(y, shift, m=None):
             xb[i] = yb[i]
     return bits_to_num(xb)
 
-def untemper_mt19973(y):
+def untemper_mt19937(y):
     y = untemper_right_shift(y, 18)
     y = untemper_left_shift(y, 15, 0xEFC60000)
     y = untemper_left_shift(y, 7, 0x9D2C5680)
@@ -44,15 +44,15 @@ def untemper_mt19973(y):
     return state
 
 def main():
-    from c21 import mt19973_rng
+    from c21 import mt19937_rng
     # Create RNG with a seed
-    rng = mt19973_rng(5489)
+    rng = mt19937_rng(5489)
     # Record 624 outputs
     output = [rng.rand() for i in range(624)]
     # Reconstruct RNG internal state by untempering outputs
-    state = [untemper_mt19973(y) for y in output]
+    state = [untemper_mt19937(y) for y in output]
     # Create 'blanc' RNG and copy state into it
-    copy_rng = mt19973_rng(0)
+    copy_rng = mt19937_rng(0)
     copy_rng.mt = state
     # Compare RNG output with output of reconstructed RNG
     for i in range(10):

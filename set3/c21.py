@@ -1,6 +1,6 @@
 # Implementation of the Mersenne Twister RNG based on pseudocode from:
 # https://en.wikipedia.org/wiki/Mersenne_Twister
-class mt19973_rng:
+class mt19937_rng:
     def __init__(self, seed, **kwargs):
         # Parameters according to MT19937:
         self.w = kwargs.pop('w', 32)
@@ -49,7 +49,7 @@ class mt19973_rng:
     def low_bits(self, i):
         return i & (2**self.w-1)
 
-class mt19973_64_rng(mt19973_rng):
+class mt19937_64_rng(mt19937_rng):
     def __init__(self, seed, **kwargs):
         # Parameters according to MT19937-64:
         self.w = kwargs.pop('w', 64)
@@ -68,6 +68,6 @@ class mt19973_64_rng(mt19973_rng):
         self.initialize(seed)
 
 def main():
-    rng = mt19973_rng(seed=5489)
+    rng = mt19937_rng(seed=5489)
     for i in range(10):
         print(rng.rand())
