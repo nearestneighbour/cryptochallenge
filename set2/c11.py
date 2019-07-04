@@ -1,6 +1,6 @@
 import numpy as np
 from c08 import get_repetitions
-from c90 import ecb_cipher
+from c09 import ecb_cipher
 from c10 import cbc_cipher
 
 def encrypt_random(data, bsz):

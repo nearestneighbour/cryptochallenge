@@ -46,5 +46,5 @@ def main():
 
     with open('set2/c10data') as f:
         data = b64decode(f.read())
-    cph = cbc_cipher(b'YELLOW SUBMARINE')
-    print(cph.decrypt(data, bytes(16)))
+    cph = cbc_cipher(b'YELLOW SUBMARINE', bytes(16))
+    print(cph.decrypt(data))
