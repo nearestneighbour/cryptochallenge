@@ -24,14 +24,14 @@ class cbc_cipher(ecb_cipher):
             iv = block
         return output
 
-    def decrypt(self, data):
+    def decrypt(self, data, unpad=True):
         output = bytes()
         iv = self.iv
         for i in range(0, len(data), self.bsz):
             block = self.cph.decrypt(data[i:i+self.bsz])
             output += bytes([a^b for a,b in zip(block,iv)])
             iv = data[i:i+self.bsz]
-        return unpad_pkcs7(output)
+        return unpad_pkcs7(output) if unpad else output
 
     @staticmethod
     def encrypt_cbc(data, key=np.random.bytes(16), iv=np.random.bytes(16)):
