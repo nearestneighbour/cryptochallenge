@@ -6,14 +6,16 @@ class ctr_cipher:
     def __init__(self, **kwargs):
         self.key = kwargs.pop('key', np.random.bytes(16))
         self.kwargs = kwargs # for counter object
-        self.ctr = Counter.new(64, **self.kwargs)
+        self.kwargs['prefix'] = self.kwargs.pop('prefix', bytes(8))
 
     def encrypt(self, data):
-        cph = AES.new(self.key, AES.MODE_CTR, counter=self.ctr)
+        ctr = Counter.new(64, **self.kwargs)
+        cph = AES.new(self.key, AES.MODE_CTR, counter=ctr)
         return cph.encrypt(data)
 
     def decrypt(self, data):
-        cph = AES.new(self.key, AES.MODE_CTR, counter=self.ctr)
+        ctr = Counter.new(64, **self.kwargs)
+        cph = AES.new(self.key, AES.MODE_CTR, counter=ctr)
         return cph.decrypt(data)
 
 def main():
