@@ -3,8 +3,8 @@ from c10 import cbc_cipher
 from c15 import unpad_pkcs7
 
 class random_cipher(cbc_cipher):
-    def __init__(self, key=None, iv=None):
-        super().__init__(key, iv)
+    def __init__(self, iv=None):
+        super().__init__(iv=iv)
         with open('set3/c17data') as f:
             self.strings = f.read().split('\n')[:-1]
 
