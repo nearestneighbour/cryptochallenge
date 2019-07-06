@@ -5,17 +5,16 @@ MAXINT = 2 ** 32 - 1
 
 class sha1:
     def __init__(self):
-        self.h = [0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0]
+        self.h = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
 
     def digest(self, msg):
         msg = self.pad_msg(msg)
         h = self.h
 
         for c in range(0, len(msg), 64):
-            chunk = msg[c:c+64]
-            w = [int.from_bytes(chunk[i:i+4], 'big') for i in range(0, 64, 4)]
+            w = [int.from_bytes(msg[c:c+64][i:i+4], 'big') for i in range(0, 64, 4)]
             for i in range(16,80):
-                w += [leftrotate(w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16], 1)]
+                w += [lrot(w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16], 1)]
 
             a, b, c, d, e = h
 
@@ -34,10 +33,10 @@ class sha1:
                     f = b ^ c ^ d
                     k = 0xCA62C1D6
 
-                temp = leftrotate(a, 5) + f + e + k + w[i]
+                temp = lrot(a, 5) + f + e + k + w[i]
                 e = d
                 d = c
-                c = leftrotate(b, 30)
+                c = lrot(b, 30)
                 b = a
                 a = temp & MAXINT
 
@@ -59,7 +58,7 @@ class sha1:
     def auth(self, msg, key):
         return self.digest(key + msg)
 
-def leftrotate(x, n):
+def lrot(x, n):
     y = x << n
     y += y >> 32
-    return (y % 2**32) & MAXINT
+    return y % 2**32
