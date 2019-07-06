@@ -20,8 +20,7 @@ class sha1:
 
             for i in range(80):
                 if i in range(20):
-                    nb = (1 << 32) - 1 - b # not b
-                    f = (b & c) | (nb & d)
+                    f = (b & c) | (~b & d)
                     k = 0x5A827999
                 elif i in range(20, 40):
                     f = b ^ c ^ d
