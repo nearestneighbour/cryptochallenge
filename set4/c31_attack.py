@@ -1,3 +1,5 @@
+# run server with command: FLASK_APP=c31_server.py flask run
+
 import requests as r
 from time import time
 
@@ -13,7 +15,8 @@ def attack(emptyurl, filename):
             if t > (len(sig) + 1) * 0.05:
                 sig += bytes([j])
                 break
-        print('Discovered {} out of 20 bytes, signature so far: {}'.format(i, sig.hex()))
+        assert len(sig) == i+1, 'Failed to find next byte'
+        print('Discovered {} out of 20 bytes, signature so far: {}'.format(i+1, sig.hex()))
     return sig
 
 def main():
