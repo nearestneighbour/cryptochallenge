@@ -3,7 +3,7 @@ from c28 import lrot, MAXINT
 # Pseudocode:
 # https://tools.ietf.org/html/rfc1320
 
-class md4:
+class md4():
     def __init__(self):
         self.h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
 
@@ -42,3 +42,32 @@ class md4:
         while len(msg) % 64 != 56:
             msg += b'\x00'
         return msg + ml
+
+    def auth(self, msg, key):
+        return self.digest(key + msg)
+
+class md4_append_msg(md4):
+    def __init__(self, state, prep_len):
+        self.h = state
+        self.pl = prep_len
+
+    def pad_msg(self, msg): # Overwrite sha1's pad_msg function
+        ml = ((len(msg) + self.pl) * 8).to_bytes(8, 'little')
+        msg += bytes([128])
+        while (len(msg) % 64) < 56:
+            msg += b'\x00'
+        return msg + ml
+
+def main():
+    import numpy as np
+    key = np.random.bytes(16)
+    org_msg = (b'comment1=cooking%20MCs;userdata=foo;'
+               b'comment2=%20like%20a%20pound%20of%20bacon')
+    org_mac = md4().auth(org_msg, key)
+    prepend_len = len(md4().pad_msg(bytes(16) + org_msg))
+    state = [int.from_bytes(org_mac[i:i+4], 'little') for i in range(0, 16, 4)]
+    m = md4_append_msg(state, prepend_len)
+    new_mac = m.digest(b';admin=true')
+    print('Our MAC: ', new_mac)
+    mac = md4().digest(md4().pad_msg(key+org_msg)+b';admin=true')
+    print('Valid MAC: ', mac)

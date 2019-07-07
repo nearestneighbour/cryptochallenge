@@ -1,4 +1,3 @@
-import numpy as np
 from c28 import sha1
 
 class sha1_append_msg(sha1):
@@ -14,6 +13,7 @@ class sha1_append_msg(sha1):
         return msg + ml
 
 def main():
+    import numpy as np
     # We have MAC(key || msg), and we want to get MAC(key || msg || our_msg) without
     # knowing the key (only it's size).
     key = np.random.bytes(16)
@@ -25,8 +25,10 @@ def main():
     # used for the original MAC.
     prepend_len = len(sha1().pad_msg(bytes(16) + org_msg))
     # Derive the state of the sha-1 function from the MAC.
-    state = [int.from_bytes(mac[i:i+4], 'big') for i in range(0, 20, 4)]
+    state = [int.from_bytes(org_mac[i:i+4], 'big') for i in range(0, 20, 4)]
     # Compute new mac
-    m = sha1_append_msg(state, prep_len)
+    m = sha1_append_msg(state, prepend_len)
     new_mac = m.digest(b';admin=true')
-    print(new_mac)
+    print('Our MAC: ', new_mac)
+    mac = sha1().digest(sha1().pad_msg(key+org_msg)+b';admin=true')
+    print('Valid MAC: ', mac)
