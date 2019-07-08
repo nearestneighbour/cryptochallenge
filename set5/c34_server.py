@@ -22,7 +22,10 @@ def handle_request():
             return 'Send DH parameters first', 400
 
         msg_ct = request.args['msg']
-        msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
+        try:
+            msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
+        except:
+            return 'Server could not decrypt message', 500
         msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
         return jsonify({'msg': msg_ct})
 
