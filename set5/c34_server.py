@@ -2,6 +2,7 @@
 # FLASK_APP=set5/c34_server.py flask run --port 5000
 
 from flask import Flask, request, jsonify
+import sys.stderr
 from c33 import diffiehellman
 from c34_client import numbytes, encrypt_msg, decrypt_msg
 
@@ -26,6 +27,7 @@ def handle_request():
             msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
         except:
             return 'Server could not decrypt message', 500
+        print(msg_pt, file=sys.stderr)
         msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
         return jsonify({'msg': msg_ct})
 

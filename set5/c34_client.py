@@ -1,6 +1,6 @@
 import numpy as np
-import requests as r
-import secrets
+import requests.get
+import secrets.randbits
 import sys
 sys.path.append('set2')
 sys.path.append('set4')
@@ -28,16 +28,18 @@ def main():
     print('Message: ', msg_pt)
 
     # Send DH parameters and receive public key
-    response = r.get(url + '?p={}&g={}&pk={}'.format(p, g, dh.publickey()))
+    response = requests.get(url + '?p={}&g={}&pk={}'.format(p, g, dh.publickey()))
     if response.status_code != 200:
-        print('Status code {}: '.format(response.status_code), response.text)
+        print('Status code-1 {}: '.format(response.status_code), response.text)
+        return
     pk = response.json()['pk']
     msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
 
-    # Send encrypted message and receive echo
-    response = r.get(url + '?msg=' + msg_ct)
+    # Send encrypted message and decrypt echo
+    response = requests.get(url + '?msg=' + msg_ct)
     if response.status_code != 200:
-        print('Status_code {}: '.format(response.status_code), response.text)
+        print('Status_code-2 {}: '.format(response.status_code), response.text)
+        return
     msg_ct = response.json()['msg']
     try:
         msg_pt = decrypt_msg(dh.secret(pk), msg_ct)

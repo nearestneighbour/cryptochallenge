@@ -1,4 +1,4 @@
-import secrets
+import secrets.randbits
 
 class diffiehellman:
     def __init__(self, p, g, priv=None):
