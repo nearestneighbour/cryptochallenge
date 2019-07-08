@@ -9,8 +9,18 @@ class diffiehellman:
     def publickey(self):
         return pow(self.g, self.priv, self.p)
 
-    def secret(self, pubkey):
-        return pow(pubkey, self.priv, self.p)
+    def secret(self, pubkey, tobytes=True):
+        s = pow(pubkey, self.priv, self.p)
+        if tobytes:
+            s = s.to_bytes(numbytes(s), 'big')
+        return s
+
+def numbytes(s):
+    n = 0
+    while s > 0:
+        s >>= 8
+        n += 1
+    return n
 
 def main():
     p = int(
@@ -26,5 +36,5 @@ def main():
     g = 2
     A = diffiehellman(p, g)
     B = diffiehellman(p, g)
-    print(A.secret(B.publickey()))
-    print(B.secret(A.publickey()))
+    print(A.secret(B.publickey(), False))
+    print(B.secret(A.publickey(), False))
