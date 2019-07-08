@@ -1,5 +1,5 @@
 # run with the command:
-# FLASK_APP=set5/c34_server.py flask run
+# FLASK_APP=set5/c34_server.py flask run --port 5000
 
 from flask import Flask, request, jsonify
 from c33 import diffiehellman
@@ -14,16 +14,16 @@ def handle_request():
     global dh, pk
     if 'p' in request.args:
         dh = diffiehellman(int(request.args['p']), int(request.args['g']))
-        pk = int(request.args['A'])
-        return jsonify({'B': dh.publickey()})
+        pk = int(request.args['pk'])
+        return jsonify({'pk': dh.publickey()})
 
     elif 'msg' in request.args:
         if dh == None:
-            return jsonify({'error': 'Send DH parameters first'})
+            return 'Send DH parameters first', 400
 
         msg_ct = request.args['msg']
-        msg_pt = decrypt_msg(dh.secret(pk), msg)
-        msg ct = encrypt_msg(dh.secret(pk), msg)
+        msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
+        msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
         return jsonify({'msg': msg_ct})
 
     return 'Invalid request', 400

@@ -24,13 +24,27 @@ def decrypt_msg(s, msg):
     iv = msg[-16:]
     msg = msg[:-16]
     key = sha1().digest(s.to_bytes(numbytes(s), 'big'))[:16]
-    return cbc_cipher.decrypt_cbc(msg, key=key, iv=iv)
+    return cbc_cipher.decrypt_cbc(msg, key=key, iv=iv).decode()
 
 def main():
-    dh = diffiehellman(100, 3)
-    pk = r.get('http://localhost:5000/test?p=100&g=3&A=' + str(dh.publickey())).json()['B']
-    msg = encrypt_msg(dh.secret(pk), 'abcdefg')
-    return dh, pk, msg
+    url = 'http://localhost:5000/test' # port 5000 for echo bot, 5001 for mitm
+    p = 100
+    g = 3
+    dh = diffiehellman(p, g)
+    msg_pt = 'This is a message'
+    print('Message: ', msg_pt)
+
+    response = r.get(url + '?p={}&g={}&pk={}'.format(p, g, dh.publickey()))
+    if response.status_code != 200:
+        print('Status code {}: '.format(response.status_code), response.text)
+    pk = response.json()['pk']
+    msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
+    response = r.get(url + '?msg=' + msg_ct)
+    if response.status_code != 200:
+        print('Status_code {}: '.format(response.status_code), response.text)
+    msg_ct = response.json()['msg']
+    msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
+    print('Echo: ', msg_pt)
 
 def submit(msg):
     return r.get('http://localhost:5000/test?msg='+msg)
