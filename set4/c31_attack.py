@@ -2,6 +2,7 @@
 
 import requests as r
 from time import time
+import numpy as np
 
 def attack(emptyurl, filename):
     url = emptyurl + '?file=' + filename + '&signature='
