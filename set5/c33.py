@@ -1,21 +1,30 @@
-import numpy as np
+import secrets
 
-p = 37
-g = 5
-a = np.random.randint(37)
-A = (g**a) % p
-b = np.random.randint(37)
-B = (g**a) % p
-s = (B**a) % p
+class diffiehellman:
+    def __init__(self, p, g, priv=None):
+        self.p = p
+        self.g = g
+        self.priv = priv if priv else secrets.randbits(len(bin(p))-1) % p
 
-# From https://en.wikipedia.org/wiki/Modular_exponentiation
-def modexp(b, e, m):
-    c = 1
-    for i in range(1, e+1):
-        c = (c*b) % m
-    return c
+    def publickey(self):
+        return pow(self.g, self.priv, self.p)
 
-def get_session_key(p, g):
-    A = modexp(g, np.random.randint(p), p)
-    B = modexp(g, np.random.randint(p), p)
-    return modexp(A, b, p)
+    def secret(self, pubkey):
+        return pow(pubkey, self.priv, self.p)
+
+def main():
+    p = int(
+        'ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024'
+        'e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd'
+        '3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec'
+        '6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f'
+        '24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361'
+        'c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552'
+        'bb9ed529077096966d670c354e4abc9804f1746c08ca237327fff'
+        'fffffffffffff', 16
+    )
+    g = 2
+    A = diffiehellman(p, g)
+    B = diffiehellman(p, g)
+    print(A.secret(B.publickey()))
+    print(B.secret(A.publickey()))
