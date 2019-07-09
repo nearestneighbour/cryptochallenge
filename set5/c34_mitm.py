@@ -2,8 +2,7 @@
 # FLASK_APP=set5/c34_mitm.py flask run --port 5001
 
 from flask import Flask, request, jsonify
-import requests.get
-import sys.stderr
+import requests, sys
 from c33 import diffiehellman
 from c34_client import numbytes, encrypt_msg, decrypt_msg
 
@@ -29,8 +28,9 @@ def handle_request():
             return response.text, response.status_code
 
         msg_ct2 = response.json()['msg']
-        print(decrypt_msg(b'', msg_ct1), file=sys.stderr)
-        print(decrypt_msg(b'', msg_ct2), file=sys.stderr)
-        return jsonify({'msg': msg_ct2})
+        print('Client->Server: ', decrypt_msg(b'\x00', msg_ct1), file=sys.stderr)
+        print('Server->Client: ', decrypt_msg(b'\x00', msg_ct2), file=sys.stderr)
+        fake_msg_ct = encrypt_msg(b'\x00', 'I can hear you')
+        return jsonify({'msg': fake_msg_ct})
 
     return 'Invalid request', 400 # Copy server behaviour

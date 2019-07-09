@@ -2,7 +2,7 @@
 # FLASK_APP=set5/c34_server.py flask run --port 5000
 
 from flask import Flask, request, jsonify
-import sys.stderr
+import sys
 from c33 import diffiehellman
 from c34_client import numbytes, encrypt_msg, decrypt_msg
 

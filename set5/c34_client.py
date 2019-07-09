@@ -1,7 +1,5 @@
 import numpy as np
-import requests.get
-import secrets.randbits
-import sys
+import requests, secrets, sys
 sys.path.append('set2')
 sys.path.append('set4')
 from c10 import cbc_cipher
@@ -20,8 +18,8 @@ def decrypt_msg(s, msg):
     key = sha1().digest(s)[:16]
     return cbc_cipher.decrypt_cbc(msg, key=key, iv=iv).decode()
 
-def main():
-    url = 'http://localhost:5001/test' # port 5000 for echo bot, 5001 for MITM
+def main(port=5000):  # port 5000 for echo bot, 5001 for MITM
+    url = 'http://localhost:{}/test'.format(port)
     p = secrets.randbits(1024); g = 3
     dh = diffiehellman(p, g)
     msg_pt = 'This is a message'
@@ -44,6 +42,6 @@ def main():
     try:
         msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
     except:
-        print('Client could not decrypt message!')
+        print('Client could not decrypt message')
     else:
         print('Echo: ', msg_pt)
