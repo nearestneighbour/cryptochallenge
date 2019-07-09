@@ -1,4 +1,4 @@
-import secrets.randbits
+import secrets
 
 class diffiehellman:
     def __init__(self, p, g, priv=None):
@@ -20,7 +20,7 @@ def numbytes(s):
     while s > 0:
         s >>= 8
         n += 1
-    return n
+    return max(1, n)
 
 def main():
     p = int(
