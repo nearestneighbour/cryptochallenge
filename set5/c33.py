@@ -4,10 +4,12 @@ class diffiehellman:
     def __init__(self, p, g, priv=None):
         self.p = p
         self.g = g
-        self.priv = priv if priv else secrets.randbits(len(bin(p))-1) % p
+        self.priv = priv if priv else secrets.randbits(numbytes(p)*8) % p
 
-    def publickey(self):
-        return pow(self.g, self.priv, self.p)
+    def publickey(self, tobytes=False):
+        pk = pow(self.g, self.priv, self.p)
+        if tobytes:
+            pk = pk.to_bytes(numbytes(pk), 'big')
 
     def secret(self, pubkey, tobytes=True):
         s = pow(pubkey, self.priv, self.p)
