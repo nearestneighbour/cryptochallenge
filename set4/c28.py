@@ -13,7 +13,7 @@ class sha1:
 
         for c in range(0, len(msg), 64):
             w = [int.from_bytes(msg[c:c+64][i:i+4], 'big') for i in range(0, 64, 4)]
-            for i in range(16,80):
+            for i in range(16, 80):
                 w += [lrot(w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16], 1)]
 
             a, b, c, d, e = h
@@ -58,6 +58,4 @@ class sha1:
         return self.digest(key + msg)
 
 def lrot(x, n):
-    y = x << n
-    y += y >> 32
-    return y % 2**32
+    return (x << n) | (x >> (32-n))
