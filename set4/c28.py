@@ -57,5 +57,17 @@ class sha1:
     def auth(self, msg, key):
         return self.digest(key + msg)
 
+    def hmac(self, msg, key):
+        if len(key) > 64:
+            key = self.digest(key)
+        while len(key) < 64:
+            key += b'\x00'
+        opad = bytes([k^0x5c for k in key])
+        ipad = bytes([k^0x36 for k in key])
+        return self.digest(opad + self.digest(ipad + msg))
+
 def lrot(x, n):
-    return (x << n) | (x >> (32-n))
+    return ((x << n) | (x >> (32-n))) & MAXINT
+
+def rrot(x, n):
+    return ((x >> n) | (x << (32-n))) & MAXINT

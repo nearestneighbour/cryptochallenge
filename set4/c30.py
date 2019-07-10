@@ -3,7 +3,7 @@ from c28 import lrot, MAXINT
 # Pseudocode:
 # https://tools.ietf.org/html/rfc1320
 
-class md4():
+class md4(sha1): # inherit auth(), hmac() from sha1
     def __init__(self):
         self.h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
 
@@ -42,9 +42,6 @@ class md4():
         while len(msg) % 64 != 56:
             msg += b'\x00'
         return msg + ml
-
-    def auth(self, msg, key):
-        return self.digest(key + msg)
 
 class md4_append_msg(md4):
     def __init__(self, state, prep_len):
