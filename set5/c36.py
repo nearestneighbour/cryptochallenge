@@ -3,10 +3,11 @@
 # SHA-256 algorithm myself, see c36_sha256.py.
 
 import secrets
-from c33 import nist as N
+from c33 import diffiehellman, nist, numbytes
 from c36_sha256 import sha256
 
-g = 2; k = 3; I = b'johnsmith@aol.com'; P = 'hunter2'
+N = nist; g = 2; k = 3; I = b'johnsmith@aol.com'; P = b'hunter2'
+N = secrets.randbits(32)
 
 class server:
     def __init__(self):
@@ -17,31 +18,32 @@ class server:
         self.v = pow(2, x, N)
 
     def receive_pubkey(self, msg):
-        self.pk = msg['pk']
-        u = int(sha256().digest(msg['pk'] + self.dh.publickey(True)).hex(), 16)
-        u = int(uH.hext(), 16)
-        return {'salt': self.salt, 'pk': k*self.v + self.dh.publickey(True)}
+        self.pk = msg['A']
+        self.k = self.derive_session_key()
+        return {'salt': self.salt, 'B': k*self.v + self.dh.publickey(True)}
 
     def derive_session_key(self):
-        pass
-
+        u = int(sha256().digest(self.pk + self.dh.publickey(True)).hex(), 16)
+        s = pow(int.from_bytes(self.pk, 'big') * pow(self.v, u), self.dh.priv, N)
+        return sha256().digest(s.to_bytes(numbytes(s), 'big'))
 
 class client:
     def __init__(self):
         self.dh = diffiehellman(N, g)
 
     def exchange_pubkeys(self, s):
-        msg = {'pk': self.dh.publickey(True)}
-        response = s.receive_message(msg)
+        msg = {'A': self.dh.publickey(True)}
+        response = s.receive_pubkey(msg)
         self.salt = response['salt']
-        self.pk = response['pk']
+        self.pk = response['B']
+        self.k = derive_session_key()
 
     def derive_session_key(self):
-        u = int(sha256().digest(self.dh.publickey(True) + msg['pk']).hex(), 16)
+        u = int(sha256().digest(self.dh.publickey(True) + self.pk).hex(), 16)
         x = int(sha256().digest(self.salt + P).hex(), 16)
-        s = pow(int.from_bytes(self.pk, 'big') - k * pow(g, x), a + u * x, N)
-        k = sha256().digest(s.to_bytes())
+        s = pow(int.from_bytes(self.pk, 'big') - k * pow(g, x), self.dh.priv + u * x, N)
+        return sha256().digest(s.to_bytes(numbytes(s), 'big'))
 
 def main():
-    s = server(password=P)
+    s = server()
     c = client()

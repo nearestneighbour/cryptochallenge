@@ -1,9 +1,9 @@
 # Pseudocode from wikipedia:
 # https://en.wikipedia.org/wiki/SHA-2#Pseudocode
 
-from c28 import sha1, lrot, MAXINT
+from c28 import sha1, rrot, MAXINT
 
-class sha256(sha1): # Inherit pad_msg() and auth() from sha1
+class sha256(sha1): # Inherit pad_msg(), auth() and hmac() from sha1
     def __init__(self):
         self.h = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
             0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]
@@ -50,6 +50,3 @@ class sha256(sha1): # Inherit pad_msg() and auth() from sha1
             hh = [(i+j) & MAXINT for i,j in zip(hh, (a, b, c, d, e, f, g, h))]
 
         return b''.join([i.to_bytes(4, 'big') for i in hh])
-
-def rrot(x, n):
-    return (x >> n) | (x << (32-n)) & MAXINT
