@@ -10,6 +10,7 @@ class diffiehellman:
         pk = pow(self.g, self.priv, self.p)
         if tobytes:
             pk = pk.to_bytes(numbytes(pk), 'big')
+        return pk
 
     def secret(self, pubkey, tobytes=True):
         s = pow(pubkey, self.priv, self.p)
