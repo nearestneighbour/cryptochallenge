@@ -1,6 +1,8 @@
 # Pseudocode from wikipedia:
 # https://en.wikipedia.org/wiki/SHA-2#Pseudocode
 
+import sys
+sys.path.append('set4')
 from c28 import sha1, rrot, MAXINT
 
 class sha256(sha1): # Inherit pad_msg(), auth() and hmac() from sha1
