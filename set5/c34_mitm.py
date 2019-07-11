@@ -17,8 +17,8 @@ def handle_request():
         p = int(request.args['p'])
         g = int(request.args['g'])
 
-        requests.get(server + '?p={}&g={}&pk={}'.format(p, g, p))
-        return jsonify({'pk': p})
+        requests.get(server + '?p={}&g={}&pk={}'.format(p, g, hex(p)[2:]))
+        return jsonify({'pk': hex(p)[2:]})
 
     elif 'msg' in request.args:
         msg_ct1 = request.args['msg']

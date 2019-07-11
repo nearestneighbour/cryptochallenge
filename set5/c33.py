@@ -6,7 +6,7 @@ class diffiehellman:
         self.g = g
         self.priv = priv if priv else secrets.randbits(numbytes(p)*8) % p
 
-    def publickey(self, tobytes=False):
+    def publickey(self, tobytes=True):
         pk = pow(self.g, self.priv, self.p)
         if tobytes:
             pk = pk.to_bytes(numbytes(pk), 'big')
@@ -40,5 +40,5 @@ def main():
     g = 2
     A = diffiehellman(nist, g)
     B = diffiehellman(nist, g)
-    print(A.secret(B.publickey(), False))
-    print(B.secret(A.publickey(), False))
+    print(A.secret(B.publickey(False), False))
+    print(B.secret(A.publickey(False), False))

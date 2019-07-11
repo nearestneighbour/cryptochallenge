@@ -15,8 +15,8 @@ def handle_request():
     global dh, pk
     if 'p' in request.args:
         dh = diffiehellman(int(request.args['p']), int(request.args['g']))
-        pk = int(request.args['pk'])
-        return jsonify({'pk': dh.publickey()})
+        pk = int(request.args['pk'], 16)
+        return jsonify({'pk': dh.publickey().hex()})
 
     elif 'msg' in request.args:
         if dh == None:
@@ -27,7 +27,7 @@ def handle_request():
             msg_pt = decrypt_msg(dh.secret(pk), msg_ct)
         except:
             return 'Server could not decrypt message', 500
-        print(msg_pt, file=sys.stderr)
+        print('Received message: ', msg_pt, file=sys.stderr)
         msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
         return jsonify({'msg': msg_ct})
 

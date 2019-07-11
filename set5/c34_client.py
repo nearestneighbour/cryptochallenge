@@ -26,11 +26,11 @@ def main(port=5000):  # port 5000 for echo bot, 5001 for MITM
     print('Message: ', msg_pt)
 
     # Send DH parameters and receive public key
-    response = requests.get(url + '?p={}&g={}&pk={}'.format(p, g, dh.publickey()))
+    response = requests.get(url + '?p={}&g={}&pk={}'.format(p, g, dh.publickey().hex()))
     if response.status_code != 200:
         print('Status code-1 {}: '.format(response.status_code), response.text)
         return
-    pk = response.json()['pk']
+    pk = int(response.json()['pk'], 16)
     msg_ct = encrypt_msg(dh.secret(pk), msg_pt)
 
     # Send encrypted message and decrypt echo
