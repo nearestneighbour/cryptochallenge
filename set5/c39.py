@@ -1,34 +1,28 @@
-from Crypto.Util import number
+from Crypto.Util.number import getPrime
 from c36_client import int2bytes
 
-# Bugs:
-# Maximum message length depends on size of primes, ML=12 for 50-bit primes,
-# ML=124 for 500-bit primes
-
-# egcd() and invmod() copied from:
-# https://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
-def egcd(a, b):
-    if a == 0:
-        return (b, 0, 1)
-    else:
-        g, y, x = egcd(b % a, a)
-        return (g, x - (b // a) * y, y)
-
+# Pseudocode from:
+# https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Modular_integers
 def invmod(a, m):
-    g, x, y = egcd(a, m)
-    if g != 1:
-        return None # No solution exists
-    else:
-        return x % m
+    t0, t1 = 0, 1
+    r0, r1 = m, a
+    while r1 != 0:
+        q = r0 // r1
+        t0, t1 = t1, t0 - q * t1
+        r0, r1 = r1, r0 - q * r1
+    return None if r0 > 1 else t0 % m
+
 
 def genprime(e=3, n=1024):
     d = None
     while d == None:
-        p = number.getPrime(n)
-        q = number.getPrime(n)
+        p = getPrime(n)
+        q = getPrime(n)
         d = invmod(e, (p-1)*(q-1))
     return p, q
 
+# Maximum message length depends on size of primes,
+# ML=12 for n=50, ML=124 for n=500
 class rsa:
     def __init__(self, p=None, q=None, e=3, n=1024):
         if not (p and q):
@@ -38,12 +32,14 @@ class rsa:
         self.e = e
 
     def encrypt(self, msg, tobytes=True):
-        msg = int.from_bytes(msg, 'big')
+        if type(msg) == bytes:
+            msg = int.from_bytes(msg, 'big')
         msg = pow(msg, self.e, self.n)
         return int2bytes(msg) if tobytes else msg
 
     def decrypt(self, msg, tobytes=True):
-        msg = int.from_bytes(msg, 'big')
+        if type(msg) == bytes:
+            msg = int.from_bytes(msg, 'big')
         msg = pow(msg, self.d, self.n)
         return int2bytes(msg) if tobytes else msg
 
