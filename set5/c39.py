@@ -12,7 +12,6 @@ def invmod(a, m):
         r0, r1 = r1, r0 - q * r1
     return None if r0 > 1 else t0 % m
 
-
 def genprime(e=3, n=1024):
     d = None
     while d == None:
