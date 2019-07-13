@@ -28,6 +28,6 @@ def main():
     n = []
     for i in range(3):
         r = rsa()
-        ct += [r.encrypt(msg, False)]
-        n += [r.n]
+        ct += [r.encrypt(msg)]
+        n += [r.publickey()[1]]
     print('Msg decrypted using CRT: ', rsa_broadcast_attack(ct, n))

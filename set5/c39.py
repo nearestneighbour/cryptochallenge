@@ -30,23 +30,26 @@ class rsa:
         self.d = invmod(e, (p-1)*(q-1))
         self.e = e
 
-    def encrypt(self, msg, tobytes=True):
+    def encrypt(self, msg, tobytes=False):
         if type(msg) == bytes:
             msg = int.from_bytes(msg, 'big')
         msg = pow(msg, self.e, self.n)
         return int2bytes(msg) if tobytes else msg
 
-    def decrypt(self, msg, tobytes=True):
+    def decrypt(self, msg, tobytes=False):
         if type(msg) == bytes:
             msg = int.from_bytes(msg, 'big')
         msg = pow(msg, self.d, self.n)
         return int2bytes(msg) if tobytes else msg
 
+    def publickey(self):
+        return self.e, self.n
+
 def main():
     r = rsa()
     msg = b'thisispatrick'
     print('Plaintext message: ', msg)
-    msg = r.encrypt(msg)
+    msg = r.encrypt(msg, True)
     print('Encrypted message: ', msg)
-    msg = r.decrypt(msg)
+    msg = r.decrypt(msg, True)
     print('Decrypted message: ', msg)
