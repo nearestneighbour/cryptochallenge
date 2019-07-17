@@ -2,10 +2,10 @@
 # FLASK_APP=set5/c34_server.py flask run
 
 import requests
-from c33 import diffiehellman, nist, numbytes
+from c33 import diffiehellman, N, numbytes
 from c36_sha256 import sha256
 
-N = nist; g = 2; k = 3; P = b'hunter2'
+g = 2; k = 3; P = b'hunter2'
 
 def intdigest(data):
     return int(sha256().digest(data).hex(), 16)

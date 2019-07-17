@@ -25,7 +25,7 @@ def numbytes(s):
         n += 1
     return max(1, n)
 
-nist = int(
+N = int(
     'ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024'
     'e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd'
     '3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec'
@@ -38,7 +38,7 @@ nist = int(
 
 def main():
     g = 2
-    A = diffiehellman(nist, g)
-    B = diffiehellman(nist, g)
+    A = diffiehellman(N, g)
+    B = diffiehellman(N, g)
     print(A.secret(B.publickey(False), False))
     print(B.secret(A.publickey(False), False))
