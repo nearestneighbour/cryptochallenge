@@ -1,5 +1,4 @@
-import numpy as np
-import requests, secrets, sys
+import requests, random, sys
 sys.path.append('set2')
 sys.path.append('set4')
 from c10 import cbc_cipher
@@ -8,7 +7,7 @@ from c33 import diffiehellman, numbytes
 
 def encrypt_msg(s, msg):
     key = sha1().digest(s)[:16]
-    iv = np.random.bytes(16)
+    iv = random.getrandbits(128).to_bytes(16, 'big')
     return (cbc_cipher.encrypt_cbc(msg, key=key, iv=iv) + iv).hex()
 
 def decrypt_msg(s, msg):
@@ -20,7 +19,7 @@ def decrypt_msg(s, msg):
 
 def main(port=5000):  # port 5000 for echo bot, 5001 for MITM
     url = 'http://localhost:{}/test'.format(port)
-    p = secrets.randbits(1024); g = 3
+    p = random.getrandbits(1024); g = 3
     dh = diffiehellman(p, g)
     msg_pt = 'This is a message'
     print('Message: ', msg_pt)

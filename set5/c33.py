@@ -1,10 +1,10 @@
-import secrets
+import random
 
 class diffiehellman:
     def __init__(self, p, g, priv=None):
         self.p = p
         self.g = g
-        self.priv = priv if priv else secrets.randbits(numbytes(p)*8) % p
+        self.priv = priv if priv else random.getrandbits(numbytes(p)*8) % p
 
     def publickey(self, tobytes=True):
         pk = pow(self.g, self.priv, self.p)
