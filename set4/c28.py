@@ -47,6 +47,9 @@ class sha1:
         #    h[0]<<128 | h[1]<<96 | h[2]<<64 | h[3]<<32 | h[4]
         #).to_bytes(20, 'big')
 
+    def intdigest(self, msg):
+        return int(self.digest(msg).hex(), 16)
+
     def pad_msg(self, msg):
         ml = (len(msg) * 8).to_bytes(8, 'big')
         msg += b'\x80' # append 1 bit

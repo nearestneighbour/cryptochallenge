@@ -1,12 +1,12 @@
 import requests
 from c33 import diffiehellman
 from c36_sha256 import sha256
-from c36_client import N, g, P, intdigest, int2bytes
+from c36_client import N, g, P, int2bytes
 
 class client(diffiehellman):
     def session_key(self, salt, pk, u):
         self.salt = salt
-        x = intdigest(salt + P)
+        x = sha256().intdigest(salt + P)
         s = pow(pk, self.priv + u * x, N)
         self.key = sha256().digest(int2bytes(s))
 

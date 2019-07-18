@@ -7,17 +7,14 @@ from c36_sha256 import sha256
 
 g = 2; k = 3; P = b'hunter2'
 
-def intdigest(data):
-    return int(sha256().digest(data).hex(), 16)
-
 def int2bytes(x):
     return x.to_bytes(numbytes(x), 'big')
 
 class client(diffiehellman):
     def session_key(self, salt, pk):
         self.salt = salt
-        u = intdigest(self.publickey() + int2bytes(pk))
-        x = intdigest(salt + P)
+        u = sha256().intdigest(self.publickey() + int2bytes(pk))
+        x = sha256().intdigest(salt + P)
         s = pow(pk - k * pow(g, x, N), self.priv + u * x, N)
         self.key = sha256().digest(int2bytes(s))
 

@@ -4,13 +4,13 @@ from flask import Flask, request, jsonify
 from random import getrandbits
 from c33 import diffiehellman
 from c36_sha256 import sha256
-from c36_client import N, g, P, intdigest, int2bytes
+from c36_client import N, g, P, int2bytes
 
 class server_srp(diffiehellman):
     def __init__(self):
         super().__init__(N, g)
         self.salt = getrandbits(128).to_bytes(16, 'big')
-        self.v = pow(g, intdigest(self.salt + P), N)
+        self.v = pow(g, sha256().intdigest(self.salt + P), N)
         self.u = getrandbits(128)
 
     def session_key(self, pk):
