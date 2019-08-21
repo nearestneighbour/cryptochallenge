@@ -1,4 +1,4 @@
-# run server with command: FLASK_APP=c31_server.py flask run
+# run server with command: python3 set4/31_server.py
 
 import requests as r
 from time import time

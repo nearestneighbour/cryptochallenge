@@ -1,5 +1,5 @@
-# run server with the command:
-# FLASK_APP=set5/c34_server.py flask run
+# run server with command:
+# python3 set5/c36_server.py
 
 import requests
 from c33 import diffiehellman, N, numbytes

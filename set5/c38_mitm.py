@@ -1,4 +1,4 @@
-# run with the command: FLASK_APP=set5/c38_mitm.py flask run
+# run with command: python3 set5/c38_mitm.py
 
 from flask import Flask, request, jsonify
 import sys
@@ -38,3 +38,5 @@ def handle_request():
         return 'HMAC OK', 200
 
     return 'Invalid request', 400
+
+app.run()

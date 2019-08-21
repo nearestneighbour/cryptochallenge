@@ -1,5 +1,5 @@
-# run with the command:
-# FLASK_APP=set5/c34_server.py flask run --port 5000
+# run with command:
+# python3 set5/c34_server.py
 
 from flask import Flask, request, jsonify
 import sys
@@ -32,3 +32,5 @@ def handle_request():
         return jsonify({'msg': msg_ct})
 
     return 'Invalid request', 400
+
+app.run(port=5000)

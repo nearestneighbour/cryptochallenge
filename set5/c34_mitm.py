@@ -1,5 +1,5 @@
-# run with the command:
-# FLASK_APP=set5/c34_mitm.py flask run --port 5001
+# run with command:
+# python3 set5/c34_mitm.py
 
 from flask import Flask, request, jsonify
 import requests, sys
@@ -34,3 +34,5 @@ def handle_request():
         return jsonify({'msg': fake_msg_ct})
 
     return 'Invalid request', 400 # Copy server behaviour
+
+app.run(port=5001)

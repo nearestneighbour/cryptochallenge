@@ -39,3 +39,5 @@ def handle_request():
         return ('HMAC OK', 200) if hmac==s.hmac().hex() else ('HMAC NOT OK', 500)
 
     return 'Invalid request', 400
+
+app.run()

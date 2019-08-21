@@ -1,3 +1,5 @@
+# run server with command: python3 set4/31_server.py
+
 from flask import Flask, request
 from time import sleep
 import numpy as np
@@ -27,3 +29,5 @@ def handle_request():
 
     realsig = sha1().auth(file.encode(), key)
     return ("Valid", 200) if insecure_compare(realsig, sig) else ("Invalid", 500)
+
+app.run()

@@ -1,5 +1,5 @@
-# reuse server from challenge 31, run with command:
-# FLASK_APP=c36_server.py flask run
+# reuse server from challenge 36, run with command:
+# python3 set5/c36_server.py
 
 # When the server receives a PK that is 0, the session key will also be 0. If
 # PK=N or PK=N**2, it will also be 0.

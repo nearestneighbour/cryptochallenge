@@ -1,5 +1,5 @@
 # reuse server from challenge 31, run with command:
-# FLASK_APP=c31_server.py flask run
+# python3 set4/c31_server.py
 
 import requests as r
 from time import time

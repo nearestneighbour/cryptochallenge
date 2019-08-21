@@ -1,4 +1,4 @@
-# run with the command: FLASK_APP=set5/c38_server.py flask run
+# run with command: python3 set5/c38_server.py
 
 from flask import Flask, request, jsonify
 from random import getrandbits
@@ -34,3 +34,5 @@ def handle_request():
         return ('HMAC OK', 200) if hmac==s.hmac().hex() else ('HMAC NOT OK', 500)
 
     return 'Invalid request', 400
+
+app.run()
