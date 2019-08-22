@@ -12,23 +12,19 @@ def invmod(a, m):
         r0, r1 = r1, r0 - q * r1
     return None if r0 > 1 else t0 % m
 
-def genprime(e=3, k=1024):
+def genpriv(e=3, min_mod_len=1024):
     d = None
     while d == None:
-        p = getPrime(k // 2)
-        q = getPrime(k // 2)
+        p = getPrime((min_mod_len+1) // 2 + 1)
+        q = getPrime((min_mod_len+1) // 2 + 1)
         d = invmod(e, (p-1)*(q-1))
-    return p, q
+    n = p * q
+    return d, n
 
-# Maximum message length depends on size of primes,
-# ML=12 for n=50, ML=124 for n=500
 class rsa:
-    def __init__(self, p=None, q=None, e=3, k=1024):
-        if not (p and q):
-            p, q = genprime(e, k)
-        self.n = p * q
-        self.d = invmod(e, (p-1)*(q-1))
+    def __init__(self, e=3, k=1024):
         self.e = e
+        self.d, self.n = genpriv(e, k)
 
     def encrypt(self, msg, tobytes=False):
         if type(msg) == bytes:
